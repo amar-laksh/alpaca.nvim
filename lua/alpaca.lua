@@ -14,14 +14,16 @@ M.setup = function(args)
     M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
--- "hello" is a public method for the plugin
+-- "explain" is a public method that generates the prompts with the visually selected code.
 ---@param filetype string
 M.explain = function(filetype)
     local start_sel = vim.fn.getpos('v')[2]
     local end_sel = vim.fn.getpos('.')[2]
     local lines_range = vim.api.nvim_buf_get_lines(0, start_sel - 1, end_sel, true)
     local lines = module.concat_lines(lines_range)
-    return (string.format(M.config.prompt, filetype, lines))
+    local prompt = string.format(M.config.prompt, filetype, lines)
+    vim.api.nvim_paste(prompt .. "\r", "\r", 1)
+    return (prompt)
 end
 
 return M
